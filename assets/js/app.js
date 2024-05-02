@@ -712,7 +712,7 @@ function syncTable() {
       location: "Location",
       POPULATION_SERVED_COUNT: "Customers",
       contaminants_at_above_limit: "Pollutants detected",
-      ratio: "Detections"
+      ratio: "Detections / total tests"
     };
   }
 
