@@ -398,7 +398,11 @@ var featureLayer = L.geoJson(null, {
     if (feature.properties) {
       layer.on({
         click: function (e) {
-          identifyFeature(L.stamp(layer));
+          //identifyFeature(L.stamp(layer));
+          var pwsid = feature.properties.PWSID;
+          console.log(pwsid)
+          // Scroll to the corresponding row in the Bootstrap table
+          scrollToPWSID(pwsid);
           highlightLayer.clearLayers();
           highlightLayer.addData(featureLayer.getLayer(L.stamp(layer)).toGeoJSON());
         },
@@ -417,6 +421,35 @@ var featureLayer = L.geoJson(null, {
     }
   }
 });
+
+function scrollToPWSID(pwsid) {
+  var $table = $('#table');
+  $table.bootstrapTable('collapseAllRows');
+  var $rows = $table.bootstrapTable('getData'); // Get all rows as an array
+
+  // Find the index of the row with matching PWSID
+  var rowIndex = $rows.findIndex(function(row) {
+    return row.PWSID === pwsid;
+  });
+
+  if (rowIndex !== -1) {
+//     setTimeout(function() {
+
+    // Scroll to the row using the row index
+    $table.bootstrapTable('scrollTo', {unit: 'rows', value: rowIndex});
+    console.log(rowIndex)
+    // Wait for a short delay to ensure scroll operation completes
+    setTimeout(function() {
+      // Find the target row and trigger click on detail icon
+      var $targetRow = $table.find('tbody tr').eq(rowIndex);
+      $targetRow.find('.detail-icon').trigger('click');
+    }, 500); // Adjust delay time if needed (e.g., 300 milliseconds)
+    //$table.on('post-body.bs.table', function() {
+    //  var $targetRow = $table.find('tbody tr').eq(rowIndex);
+    //  $targetRow.find('>td>.detail-icon').trigger('click');
+    //});
+  }
+}
 
 var featureLayerNoLimits = L.geoJson(null, {
   filter: function(feature, layer) {
@@ -809,16 +842,266 @@ function buildTable() {
 */
 
 
+// Define the detailFormatter function to be used in BootstrapTable
+function detailFormatter(index, row) {
+  // Extract the ID (PWSID) from the row data
+  var PWSID = row.PWSID; // Assuming 'id' field corresponds to PWSID in your row data
+
+  // Filter jsonData for the matching PWSID
+  var filteredRows = activeJSON.filter(function(row) {
+    return row.PWSID === PWSID;
+  });
+
+  // Generate HTML content based on filteredRows
+  var content = "<div>"; // Start with a container
+
+  if (filteredRows.length > 0) {
+    // Display the PWSName as a header
+    //content += "<h5>" + filteredRows[0].PWSName + "</h5>";
+
+    // Create a table to display details
+    content += "<table class='table table-striped table-bordered'>";
+    
+    // Extract column keys excluding specified columns
+    var columnKeys = Object.keys(filteredRows[0]).filter(function(key) {
+      return key !== "PWSID" && key !== "PWSName" && key !== "font_color";
+    });
+
+    // Create table header row
+    content += "<thead><tr>";
+    columnKeys.forEach(function(key) {
+      content += "<th>" + key + "</th>";
+    });
+    content += "</tr></thead>";
+
+    // Create table body with rows of data
+    content += "<tbody>";
+    filteredRows.forEach(function(row) {
+      // Determine the font color from the "font_color" column
+      var rowFontColor = row["font_color"];
+
+      // Start row with specified font color
+      content += "<tr style='color: " + rowFontColor + ";'>";
+      
+      // Populate table cells with data for each column
+      columnKeys.forEach(function(key) {
+        var value = row[key];
+        if (!value) {
+          value = ""; // Handle empty values
+        }
+        content += "<td>" + value + "</td>";
+      });
+      
+      // Close row tag
+      content += "</tr>";
+    });
+    
+    // Close table body tag
+    content += "</tbody>";
+
+    // Close table tag
+    content += "</table>";
+  } else {
+    // If no data is found, display a message
+    content += "<p>No data found for PWSID: " + PWSID + "</p>";
+  }
+
+  content += "</div>"; // Close the container
+
+  return content;
+}
+
+// Define the detailFormatter function to be used in BootstrapTable
+
+/*
+function detailFormatter(index, row) {
+  // Initialize the content variable
+  var content = "<div>"; // Start with a container
+
+  // Extract the PWSID value from the selected row
+  var PWSID = row.PWSID;
+  
+  // Filter jsonData for the matching PWSID
+  var filteredRows = activeJSON.filter(function(row) {
+    return row.PWSID === PWSID;
+  });
+  
+  console.log(filteredRows)
+  
+  // Generate HTML content for the detail view
+  // Create a container for the embedded second Bootstrap table
+  content += "<div id='second-table-container'>";
+  content += "<table id='second-table' class='table table-striped' data-toggle='table' data-pagination='true' data-search='true'>";
+  //content += "<thead><tr><th>Column 1</th><th>Column 2</th><th>Column 3</th></tr></thead>";
+  //content += "<tbody>";
+
+  // Populate the table rows with filtered data
+  // Create a table to display details
+//    content += "<table class='table table-striped table-bordered'>";
+    
+    // Extract column keys excluding specified columns
+    var columnKeys = Object.keys(filteredRows[0]).filter(function(key) {
+      return key !== "PWSID" && key !== "PWSName" && key !== "font_color";
+    });
+
+    // Create table header row
+    content += "<thead><tr>";
+    columnKeys.forEach(function(key) {
+      content += "<th>" + key + "</th>";
+    });
+    content += "</tr></thead>";
+
+    // Create table body with rows of data
+    content += "<tbody>";
+    filteredRows.forEach(function(row) {
+      // Determine the font color from the "font_color" column
+      var rowFontColor = row["font_color"];
+
+      // Start row with specified font color
+      content += "<tr style='color: " + rowFontColor + ";'>";
+      
+      // Populate table cells with data for each column
+      columnKeys.forEach(function(key) {
+        var value = row[key];
+        if (!value) {
+          value = ""; // Handle empty values
+        }
+        content += "<td>" + value + "</td>";
+      });
+      
+      // Close row tag
+      content += "</tr>";
+    });
+    
+  content += "</tbody>";
+  content += "</table>";
+  content += "</div>";
+
+  // Close the main container
+  content += "</div>";
+
+  // Return the generated content
+  return content;
+}
+*/
+
+
+// LAST ATTEMPT
+/*
+function detailFormatter(index, row) {
+  // Initialize the content variable
+  var content = '<table id="secondTable"></table>'; // Start with a container
+
+  // Extract the PWSID value from the selected row
+  var PWSID = row.PWSID;
+  
+  // Filter jsonData for the matching PWSID
+  var filteredRows = activeJSON.filter(function(row) {
+    return row.PWSID === PWSID;
+  });
+  
+  console.log(filteredRows)
+
+const isMobile = window.innerWidth <= 767;
+    console.log(isMobile)
+  $('#detail-view').html(content);
+
+    $("#secondTable").bootstrapTable({
+      cache: false,
+      cardView: isMobile,
+      //detailView: true,
+      //detailFormatter: detailFormatter,
+      //height: $("#table-container").height(),
+      undefinedText: "",
+      striped: true,
+      pagination: false,
+      minimumCountColumns: 1,
+      //sortName: config.sortProperty,
+      //sortOrder: config.sortOrder,
+      //toolbar: "#toolbar",
+      //search: true,
+      //trimOnSearch: false,
+      //showColumns: true,
+      //showToggle: true,
+      data: filteredRows,
+      onClickRow: function (row) {
+        // do something!
+      },
+      onDblClickRow: function (row) {
+        // do something!
+      }
+    });
+  }
+  
+*/
+
+
+  
+ 
+ /*
+  filteredRows.forEach(function(row) {
+      // Determine the font color from the "font_color" column
+      var rowFontColor = row["font_color"];
+
+      // Start row with specified font color
+      content += "<tr style='color: " + rowFontColor + ";'>";
+      
+      // Populate table cells with data for each column
+      columnKeys.forEach(function(key) {
+        var value = row[key];
+        if (!value) {
+          value = ""; // Handle empty values
+        }
+        content += "<td>" + value + "</td>";
+      });
+      
+      // Close row tag
+      content += "</tr>";
+    });
+
+  // Generate HTML content for the detail view
+  // Display basic information from the main row
+  content += "<p><strong>PWSID:</strong> " + PWSID + "</p>";
+  content += "<p><strong>PWSName:</strong> " + row.PWSName + "</p>";
+
+  // Create a container for the embedded second Bootstrap table
+  content += "<div id='second-table-container'>";
+
+  // Initialize the second Bootstrap table
+  content += "<table id='second-table' data-toggle='table' data-pagination='true' " +
+             "data-search='true' data-show-toggle='true' " +
+             "data-card-view='true' " +
+             "data-url='your-data-url' " + // Replace with your data source URL
+             "data-detail-view='false'>" + // Disable detail view in embedded table
+             "</table>";
+
+  // Close the container for the embedded table
+  content += "</div>";
+
+  // Close the main container
+  content += "</div>";
+
+  // Return the generated content
+  return content;
+}
+*/
+
+
 function buildTable() {
   let currentIsMobile = window.innerWidth <= 767; // Determine the original isMobile value
 
   // Initialize table options based on window width
   function initializeTable() {
+  
     const isMobile = window.innerWidth <= 767;
+    console.log("Building table. Mobile=", isMobile)
 
     $("#table").bootstrapTable({
       cache: false,
       cardView: isMobile,
+      detailView: true,
+      detailViewByClick: true,
+      detailFormatter: detailFormatter,
       height: $("#table-container").height(),
       undefinedText: "",
       striped: true,
@@ -829,8 +1112,8 @@ function buildTable() {
       toolbar: "#toolbar",
       search: true,
       trimOnSearch: false,
-      showColumns: true,
-      showToggle: true,
+      //showColumns: true,
+      //showToggle: true,
       columns: table,
       onClickRow: function (row) {
         // do something!
@@ -860,26 +1143,52 @@ function buildTable() {
         //initializeTable();
         $("#table").bootstrapTable('toggleView');
         currentIsMobile = window.innerWidth <= 767;
-        console.log(currentIsMobile)
-
+        console.log("Mobile:", currentIsMobile)
+$("#table").bootstrapTable("resetView", {
+          height: $("#table-container").height()
+        });
       } else if (currentWindowWidth > 767 && currentIsMobile) { // && view_name!=="table") {
         // Reinitialize the table if the window width is > 767 and originalIsMobile is true
         //$("#table").bootstrapTable("destroy"); // Destroy the existing table instance
         //initializeTable();
         $("#table").bootstrapTable('toggleView');
         currentIsMobile = window.innerWidth <= 767;
-        console.log(currentIsMobile)
-
+        console.log("Mobile:", currentIsMobile)
+$("#table").bootstrapTable("resetView", {
+          height: $("#table-container").height()
+        });
       } else {
         // Adjust the table view without reinitializing the table
         $("#table").bootstrapTable("resetView", {
           height: $("#table-container").height()
         });
       }
-    }, 1); // Debounce time (adjust as needed)
+    }, 150); // Debounce time (adjust as needed)
   });
 }
 
+//column custom sorter for detections
+function customSorter(a, b) {
+
+    var a_number = retnum(a);
+    var b_number = retnum(b);
+
+    a = a_number;
+    b = b_number; 
+    if (a > b) return 1;
+    if (a < b) return -1;
+    return 0;
+}
+
+//return bytes of filesize
+function retnum(number) {
+    var parts = number.split('/')
+    var num1 = parts[0].trim(); // Get the first part (before "/") and trim any whitespace
+    var num2 = num1.replace(/[^0-9]/g, '');
+ 
+    num3 = parseInt(num2, 10);
+    return num3;
+}
 
 
 /*
@@ -938,7 +1247,17 @@ function buildTable() {
 }
 */
 
-
+/* TRYING TO ADD PADDING TO CARD VIEW
+$('#my-table').bootstrapTable({
+    columns: [
+        { field: 'id', title: 'ID' },
+        { field: 'name', title: 'Name' },
+        // Define other columns
+    ],
+    cardView: true,
+    cardViewClass: 'table-card-view'
+});
+*/
 
 function syncTable() {
   console.log ("SYNCING")
@@ -1030,6 +1349,9 @@ function syncTable() {
             return ''; // Return empty string for undefined or null values
           }
         };
+      }
+      if (prop === "ratio") {
+        columnDef.sorter = customSorter; // Use custom sorter function for "ratio" column
       }
       
       columns.push(columnDef);
@@ -1350,4 +1672,10 @@ $("#download-pdf-btn").click(function() {
 
 $("#chartModal").on("shown.bs.modal", function (e) {
   drawCharts();
+});
+
+$(document).ready(function() {
+  $("#bootstrap-table bootstrap3").on('click-row.bs.table', function(e, row, $tr) {
+    $tr.find('>td>.detail-icon').trigger('click');
+  });
 });

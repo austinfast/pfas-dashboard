@@ -108,3 +108,10 @@ body {
     display: none !important;
   }
 }
+
+.table-card-view .table td, 
+.table-card-view .table th {
+    padding: 10px; /* Adjust padding as needed */
+}
+
+

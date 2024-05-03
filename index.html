@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
+<!--   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.22.5/bootstrap-table.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet.esri.geocoder/1.0.2/esri-leaflet-geocoder.css">
     <link rel="stylesheet" href="assets/vendor/jQuery-QueryBuilder/query-builder.default.min.css">
@@ -70,8 +71,14 @@
 
     <div id="table-container">
       <div id="toolbar" style="width: 400px;">
-        <!-- REMOVE FILTER/EXPORT OPTIONS
+      <!--
         <div class="btn-group" role="group">
+        
+          <button type="button" id="toggleRowsBtn" class="btn btn-default dropdown-toggle">Toggle Rows</button>
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <!-- REMOVE FILTER/EXPORT OPTIONS
+
+
           <button type="button" class="btn btn-default" data-toggle="modal" data-target="#filterModal">
             <i class="fa fa-filter"></i> Filter Data
           </button>
@@ -213,7 +220,9 @@
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.22.5/bootstrap-table.min.js"></script>
+<!--    <script src="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/leaflet.esri/1.0.0/esri-leaflet.js"></script>
@@ -226,5 +235,26 @@
     <script src="assets/vendor/tableExport/libs/jsPDF/jspdf.min.js"></script>
     <script src="assets/vendor/tableExport/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js"></script>
     <script src="assets/js/app.js"></script>
-  </body>
+    <!--
+    <script>$(document).ready(function() {
+    var $table = $('#table');
+
+    // Initial state: Collapse all rows
+    $table.bootstrapTable('collapseAllRows');
+
+    // Toggle button click event
+    $('#toggleRowsBtn').on('click', function() {
+        var allRowsVisible = $table.bootstrapTable('getOptions').allRowsVisible;
+
+        if (allRowsVisible) {
+            // If all rows are visible, collapse all rows
+            $table.bootstrapTable('collapseAllRows');
+        } else {
+            // If not all rows are visible, expand all rows
+            $table.bootstrapTable('expandAllRows');
+        }
+    });
+});
+</script>-->
+</body>
 </html>
