@@ -621,8 +621,35 @@ function applyFilter() {
 	});
 }
 
+/*
 function buildTable() {
-  $("#table").bootstrapTable({
+  if (window.innerWidth <= 767) {
+    // Set data-card-view to true for mobile devices
+$("#table").bootstrapTable({
+    cache: false,
+    cardView: true,
+    height: $("#table-container").height(),
+    undefinedText: "",
+    striped: true,
+    pagination: false,
+    minimumCountColumns: 1,
+    sortName: config.sortProperty,
+    sortOrder: config.sortOrder,
+    toolbar: "#toolbar",
+    search: true,
+    trimOnSearch: false,
+    showColumns: true,
+    showToggle: true,
+    columns: table,
+    onClickRow: function (row) {
+      // do something!
+    },
+    onDblClickRow: function (row) {
+      // do something!
+    }
+  });  } else {
+    // Set data-card-view to false for larger screens
+$("#table").bootstrapTable({
     cache: false,
     height: $("#table-container").height(),
     undefinedText: "",
@@ -643,9 +670,9 @@ function buildTable() {
     onDblClickRow: function (row) {
       // do something!
     }
-  });
+  });  }
 
-  //map.fitBounds(featureLayer.getBounds());
+//map.fitBounds(featureLayer.getBounds());
 
   $(window).resize(function () {
     $("#table").bootstrapTable("resetView", {
@@ -653,15 +680,280 @@ function buildTable() {
     });
   });
 }
+*/
+
+let view_name = "split";
+//let tableData = []; // Variable to store table data
+/*
+let tableFeatures = null;
+
+function buildTable() {
+  let tableInitialized = false; // Flag to track if the table has been initialized
+  let currentIsMobile = window.innerWidth <= 767; // Determine the original isMobile value
+  console.log(currentIsMobile)
+
+  // Function to initialize or reinitialize the table based on current isMobile value
+  function initializeTable() {
+  let currentIsMobile = window.innerWidth <= 767;
+
+  // Check if the table should be (re)initialized based on isMobile value
+  if (!tableInitialized || currentIsMobile !== originalIsMobile) {
+    if (tableFeatures === null) {
+    $("#table").bootstrapTable({
+        cache: false,
+        cardView: currentIsMobile,
+        height: $("#table-container").height(),
+        undefinedText: "",
+        striped: true,
+        pagination: false,
+        minimumCountColumns: 1,
+        sortName: config.sortProperty,
+        sortOrder: config.sortOrder,
+        toolbar: "#toolbar",
+        search: true,
+        trimOnSearch: false,
+        showColumns: true,
+        showToggle: true,
+        columns: table,
+        onClickRow: function (row) {
+          // Handle row click
+        },
+        onDblClickRow: function (row) {
+          // Handle double-click on row
+        }
+      });
+    
+      // Restore data from previous initialization
+  //$("#table").bootstrapTable("destroy"); // Destroy the existing table instance
+  //$("#table").bootstrapTable($.extend({}, {
+   // data: tableFeatures // Load the table data
+  //}));    
+  } else {
+      // Initialize the table with new data
+      $("#table").bootstrapTable({
+        cache: false,
+        cardView: currentIsMobile,
+        height: $("#table-container").height(),
+        undefinedText: "",
+        striped: true,
+        pagination: false,
+        minimumCountColumns: 1,
+        sortName: config.sortProperty,
+        sortOrder: config.sortOrder,
+        toolbar: "#toolbar",
+        search: true,
+        trimOnSearch: false,
+        showColumns: true,
+        showToggle: true,
+        columns: table,
+        data: tableFeatures,
+        onClickRow: function (row) {
+          // Handle row click
+        },
+        onDblClickRow: function (row) {
+          // Handle double-click on row
+        }
+      });
+
+      // Get the table data after initialization
+    //  tableData = $("#table").bootstrapTable("getData");
+    
+    console.log("INITIALIZED");
+    console.log(tableFeatures)
+    //console.log(tableData)
+    console.log (view_name)
+    tableInitialized = true; // Set flag to true after initialization
+    originalIsMobile = currentIsMobile; // Update the original isMobile value
+  }
+  }
+}
+
+  // Initial table setup
+  initializeTable();
+
+  // Rebuild table view on window resize
+  let resizeTimer;
+  $(window).resize(function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      let currentWindowWidth = window.innerWidth;
+
+//	if (view_name === "table") {
+		//syncTable();
+//	console.log ("TABLE")
+	if (currentWindowWidth <= 767 && !currentIsMobile) { //&& view_name!=="table") {
+        // Reinitialize the table if the window width is <= 767 and originalIsMobile is false
+    	//$("#table").bootstrapTable("destroy"); // Destroy the existing table instance
+        //initializeTable();
+        $("#table").bootstrapTable('toggleView');
+        currentIsMobile = window.innerWidth <= 767;
+        console.log(currentIsMobile)
+
+      } else if (currentWindowWidth > 767 && currentIsMobile) { // && view_name!=="table") {
+        // Reinitialize the table if the window width is > 767 and originalIsMobile is true
+        //$("#table").bootstrapTable("destroy"); // Destroy the existing table instance
+        //initializeTable();
+        $("#table").bootstrapTable('toggleView');
+        currentIsMobile = window.innerWidth <= 767;
+        console.log(currentIsMobile)
+
+      } else {
+        // Adjust the table view without reinitializing the table
+        $("#table").bootstrapTable("resetView", {
+          height: $("#table-container").height()
+        });
+      }
+    }, 0); // Debounce time (adjust as needed)
+  });
+}
+*/
+
+
+function buildTable() {
+  let currentIsMobile = window.innerWidth <= 767; // Determine the original isMobile value
+
+  // Initialize table options based on window width
+  function initializeTable() {
+    const isMobile = window.innerWidth <= 767;
+
+    $("#table").bootstrapTable({
+      cache: false,
+      cardView: isMobile,
+      height: $("#table-container").height(),
+      undefinedText: "",
+      striped: true,
+      pagination: false,
+      minimumCountColumns: 1,
+      sortName: config.sortProperty,
+      sortOrder: config.sortOrder,
+      toolbar: "#toolbar",
+      search: true,
+      trimOnSearch: false,
+      showColumns: true,
+      showToggle: true,
+      columns: table,
+      onClickRow: function (row) {
+        // do something!
+      },
+      onDblClickRow: function (row) {
+        // do something!
+      }
+    });
+  }
+
+  // Initial table setup
+  initializeTable();
+
+  // Rebuild table on window resize
+ let resizeTimer;
+  $(window).resize(function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      let currentWindowWidth = window.innerWidth;
+
+//	if (view_name === "table") {
+		//syncTable();
+//	console.log ("TABLE")
+	if (currentWindowWidth <= 767 && !currentIsMobile) { //&& view_name!=="table") {
+        // Reinitialize the table if the window width is <= 767 and originalIsMobile is false
+    	//$("#table").bootstrapTable("destroy"); // Destroy the existing table instance
+        //initializeTable();
+        $("#table").bootstrapTable('toggleView');
+        currentIsMobile = window.innerWidth <= 767;
+        console.log(currentIsMobile)
+
+      } else if (currentWindowWidth > 767 && currentIsMobile) { // && view_name!=="table") {
+        // Reinitialize the table if the window width is > 767 and originalIsMobile is true
+        //$("#table").bootstrapTable("destroy"); // Destroy the existing table instance
+        //initializeTable();
+        $("#table").bootstrapTable('toggleView');
+        currentIsMobile = window.innerWidth <= 767;
+        console.log(currentIsMobile)
+
+      } else {
+        // Adjust the table view without reinitializing the table
+        $("#table").bootstrapTable("resetView", {
+          height: $("#table-container").height()
+        });
+      }
+    }, 1); // Debounce time (adjust as needed)
+  });
+}
+
+
+
+/*
+function buildTable() {
+  let tableInstance; // Variable to hold the Bootstrap Table instance
+  let tableData = []; // Initialize tableData with an empty array
+
+  // Function to initialize or reinitialize the table based on window width
+  function initializeTable() {
+    const isMobile = window.innerWidth <= 767;
+
+    // Destroy existing table instance if it exists
+    if (tableInstance) {
+      // Save the current table data before destroying
+      tableData = tableInstance.bootstrapTable("getData");
+      tableInstance.bootstrapTable("destroy");
+    }
+
+    // Initialize Bootstrap Table with appropriate options
+    tableInstance = $("#table").bootstrapTable({
+      cache: false,
+      cardView: isMobile,
+      height: $("#table-container").height(),
+      undefinedText: "",
+      striped: true,
+      pagination: false,
+      minimumCountColumns: 1,
+      sortName: config.sortProperty,
+      sortOrder: config.sortOrder,
+      toolbar: "#toolbar",
+      search: true,
+      trimOnSearch: false,
+      showColumns: true,
+      showToggle: true,
+      columns: table,
+      data: tableData || [], // Use saved table data if available, otherwise empty array
+      onClickRow: function (row) {
+        // do something!
+      },
+      onDblClickRow: function (row) {
+        // do something!
+      }
+    });
+  }
+
+  // Initial table setup
+  initializeTable();
+
+  let resizeTimer;
+  $(window).resize(function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      initializeTable(); // Reinitialize table based on new window width after resizing stops
+    }, 200); // Debounce time (adjust as needed)
+  });
+}
+*/
+
 
 
 function syncTable() {
+  console.log ("SYNCING")
+      // Check if view_name is "table"
+    if (view_name === "table") {
+    console.log ("STOP SYNC")
+        // If view_name is "table", stop the function
+        return; // This will exit the function early
+    }
   tableFeatures = [];
   
   // Define columns based on the activeLayer type
   var columns = [];
   var columnDefinitions = {};
-  var currentOptions = $("#table").bootstrapTable('getOptions');
+  currentOptions = $("#table").bootstrapTable('getOptions');
 
   // Define the action column
   var actionColumn = {
@@ -927,7 +1219,10 @@ function switchView(view) {
     $("#table-container").css("height", "55%");
     $("#map-container").show();
     $("#map-container").css("height", "45%");
-    $(window).resize();
+    //$(window).resize();
+    $("#table").bootstrapTable("resetView", {
+      height: $("#table-container").height()
+    });
     if (map) {
       map.invalidateSize();
     }
@@ -946,7 +1241,10 @@ function switchView(view) {
     $("#table-container").show();
     $("#table-container").css("height", "100%");
     $("#map-container").hide();
-    $(window).resize();
+    //$(window).resize();
+   $("#table").bootstrapTable("resetView", {
+      height: $("#table-container").height()
+    });  
   }
 }
 
@@ -954,13 +1252,19 @@ $("[name='view']").click(function() {
   $(".in,.open").removeClass("in open");
   if (this.id === "map-graph") {
     switchView("split");
+    view_name="split";
+    console.log("Current view name:", view_name);
     return false;
   } else if (this.id === "map-only") {
     switchView("map");
-    return false;
+    view_name="map";
+    console.log("Current view name:", view_name);
+     return false;
   } else if (this.id === "graph-only") {
     switchView("table");
-    return false;
+    view_name="table";
+    console.log("Current view name:", view_name);
+     return false;
   }
 });
 
@@ -996,7 +1300,7 @@ $("#reset-filter-btn").click(function() {
 });
 
 $("#extent-btn").click(function() {
-  map.fitBounds(featureLayer.getBounds());
+  map.fitBounds(activeLayer.getBounds());
   $(".navbar-collapse.in").collapse("hide");
   return false;
 });
